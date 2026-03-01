@@ -5,8 +5,6 @@ import { Sidebar } from './components/Sidebar'
 import { ContentArea } from './components/ContentArea'
 import { Wizard } from './components/Wizard'
 import { ThemeProvider, useTheme } from './contexts/ThemeContext'
-import { ThemeEditorProvider } from './contexts/ThemeEditorContext'
-import { ThemeEditor } from './components/ThemeEditor'
 
 function MainContent(): React.JSX.Element {
   const navigate = useNavigate()
@@ -110,13 +108,14 @@ function MainContent(): React.JSX.Element {
   }
 
   const isDark = currentTheme?.mode === 'dark'
+  const brandColor = currentTheme?.config?.tdesign?.brandColor || '#0052D9'
 
   return (
     <ConfigProvider
       theme={{
         algorithm: isDark ? antTheme.darkAlgorithm : antTheme.defaultAlgorithm,
         token: {
-          colorPrimary: 'var(--ant-color-primary, #1890ff)'
+          colorPrimary: brandColor
         }
       }}
     >
@@ -222,14 +221,11 @@ function getPlatform(): string {
 function App(): React.JSX.Element {
   return (
     <ThemeProvider>
-      <ThemeEditorProvider>
-        <HashRouter>
-          <Routes>
-            <Route path="/*" element={<MainContent />} />
-          </Routes>
-        </HashRouter>
-        <ThemeEditor />
-      </ThemeEditorProvider>
+      <HashRouter>
+        <Routes>
+          <Route path="/*" element={<MainContent />} />
+        </Routes>
+      </HashRouter>
     </ThemeProvider>
   )
 }

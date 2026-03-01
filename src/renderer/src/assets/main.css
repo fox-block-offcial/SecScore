@@ -8,6 +8,7 @@ body,
   padding: 0;
   overflow: hidden;
   user-select: none;
+  background: var(--ss-bg-color, #f5f5f5);
 }
 
 input,
@@ -29,11 +30,10 @@ textarea {
 
 .ss-sidebar .ant-menu-item-selected {
   background-color: var(--ss-sidebar-active-bg, var(--ss-item-hover, transparent)) !important;
-  color: var(--ss-sidebar-active-text, var(--ss-sidebar-text, var(--ss-text-main)));
-}
-
-html[theme-mode='dark'] .ss-sidebar .ant-menu-item-selected {
-  color: #ffffff !important;
+  color: var(
+    --ss-sidebar-active-text,
+    var(--ant-color-primary, var(--ss-sidebar-text, var(--ss-text-main)))
+  );
 }
 
 @media (pointer: coarse) {

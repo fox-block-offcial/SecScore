@@ -7,7 +7,6 @@ import {
   SettingOutlined
 } from '@ant-design/icons'
 import { useTheme } from '../App'
-import { Switch } from 'antd'
 
 const { Content } = Layout
 
@@ -21,7 +20,7 @@ const tabs = [
 export function MobileLayout(): React.JSX.Element {
   const location = useLocation()
   const navigate = useNavigate()
-  const { isDark, toggleTheme } = useTheme()
+  const { isDark } = useTheme()
 
   return (
     <Layout

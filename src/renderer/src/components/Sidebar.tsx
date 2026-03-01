@@ -158,7 +158,7 @@ export function Sidebar({ activeMenu, permission, onMenuChange }: SidebarProps):
       className="ss-sidebar"
       width={200}
       style={{
-        backgroundColor: 'var(--ss-sidebar-bg)',
+        background: 'var(--ss-sidebar-bg)',
         borderRight: '1px solid var(--ss-border-color)',
         display: 'flex',
         flexDirection: 'column'

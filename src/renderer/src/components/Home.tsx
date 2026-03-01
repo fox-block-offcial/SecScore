@@ -786,7 +786,7 @@ export const Home: React.FC<{ canEdit: boolean }> = ({ canEdit }) => {
               <div
                 style={{
                   padding: '16px',
-                  backgroundColor:
+                  background:
                     customScore > 0
                       ? 'var(--ant-color-success-bg, #f6ffed)'
                       : customScore < 0

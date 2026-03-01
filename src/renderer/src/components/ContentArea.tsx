@@ -1,8 +1,6 @@
 import React, { Suspense, lazy } from 'react'
-import { Layout, Space, Button, Tag, Spin } from 'antd'
+import { Layout, Space, Button, Tag } from 'antd'
 import { Routes, Route, Navigate } from 'react-router-dom'
-import { WindowControls } from './WindowControls'
-import { ThemeEditor } from './ThemeEditor'
 
 const Home = lazy(() => import('./Home').then((m) => ({ default: m.Home })))
 const StudentManager = lazy(() =>
@@ -51,17 +49,16 @@ export function ContentArea({
         display: 'flex',
         flexDirection: 'column',
         overflow: 'hidden',
-        backgroundColor: 'var(--ss-bg-color)'
+        background: 'var(--ss-bg-color)'
       }}
     >
       <div
         style={
           {
-            height: '32px',
-            WebkitAppRegion: 'drag',
+            height: '40px',
             display: 'flex',
             alignItems: 'center',
-            backgroundColor: 'var(--ss-header-bg)',
+            background: 'var(--ss-header-bg)',
             borderBottom: '1px solid var(--ss-border-color)',
             flexShrink: 0
           } as React.CSSProperties
@@ -73,12 +70,11 @@ export function ContentArea({
             {
               display: 'flex',
               alignItems: 'center',
-              paddingRight: '0px',
-              WebkitAppRegion: 'no-drag'
+              paddingRight: '12px'
             } as React.CSSProperties
           }
         >
-          <Space size="small" style={{ marginRight: '12px' }}>
+          <Space size="small">
             {permissionTag}
             {hasAnyPassword && (
               <>
@@ -91,7 +87,6 @@ export function ContentArea({
               </>
             )}
           </Space>
-          <WindowControls />
         </div>
       </div>
 
@@ -106,7 +101,16 @@ export function ContentArea({
                 height: '100%'
               }}
             >
-              <Spin size="large" description="正在载入页面..." />
+              <div
+                style={{
+                  width: '40px',
+                  height: '40px',
+                  border: '3px solid var(--ss-border-color)',
+                  borderTopColor: 'var(--ant-color-primary)',
+                  borderRadius: '50%',
+                  animation: 'spin 1s linear infinite'
+                }}
+              />
             </div>
           }
         >
@@ -129,7 +133,6 @@ export function ContentArea({
           </Routes>
         </Suspense>
       </Content>
-      <ThemeEditor />
     </Layout>
   )
 }

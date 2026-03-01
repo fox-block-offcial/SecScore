@@ -1,4 +1,4 @@
-import { ConfigProvider, theme as antTheme, Layout, message } from 'antd'
+import { ConfigProvider, theme as antTheme, message } from 'antd'
 import { HashRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { useState, useEffect, createContext, useContext } from 'react'
 import { MobileHome } from './pages/Home'
@@ -45,7 +45,7 @@ export const useApi = () => {
 function App(): React.JSX.Element {
   const [isDark, setIsDark] = useState(false)
   const [apiConfig, setApiConfig] = useState<ApiConfig>({ baseUrl: '' })
-  const [messageApi, messageHolder] = message.useMessage()
+  const [, messageHolder] = message.useMessage()
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme')

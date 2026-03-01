@@ -49,7 +49,6 @@ type mainAppConfig = {
   dataRoot: string
   configDir: string
   logDir: string
-  themeDir: string
   dbPath: string
   pgConnectionString?: string
   window: windowManagerOptions
@@ -188,9 +187,6 @@ app.whenReady().then(async () => {
 
   const logDir = is.dev ? join(process.cwd(), 'logs') : join(dataRoot, 'logs')
   const configDir = is.dev ? join(process.cwd(), 'configs') : join(dataRoot, 'configs')
-  const themeDir = is.dev
-    ? join(process.cwd(), 'themes')
-    : ensureWritableDir(join(appRoot, 'themes'), join(dataRoot, 'themes'))
   const dbPath = is.dev ? join(process.cwd(), 'db.sqlite') : join(dataRoot, 'db.sqlite')
 
   const pgConnectionString = process.env['PG_CONNECTION_STRING'] || undefined
@@ -201,7 +197,6 @@ app.whenReady().then(async () => {
     dataRoot,
     logDir,
     configDir,
-    themeDir,
     dbPath,
     pgConnectionString,
     window: {
@@ -263,10 +258,7 @@ app.whenReady().then(async () => {
         (p) => new TagRepository((p.get(DbManagerToken) as DbManager).dataSource)
       )
 
-      services.addSingleton(
-        ThemeServiceToken,
-        (p) => new ThemeService(p.get(MainContext), config.themeDir)
-      )
+      services.addSingleton(ThemeServiceToken, (p) => new ThemeService(p.get(MainContext)))
       services.addSingleton(
         WindowManagerToken,
         (p) => new WindowManager(p.get(MainContext), config.window)

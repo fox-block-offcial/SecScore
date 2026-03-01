@@ -6,6 +6,7 @@ interface themeContextType {
   currentTheme: themeConfig | null
   setTheme: (id: string) => Promise<void>
   themes: themeConfig[]
+  applyTheme: (theme: themeConfig) => void
 }
 
 const ThemeContext = createContext<themeContextType | undefined>(undefined)
@@ -25,20 +26,26 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
     root.setAttribute('theme-mode', theme.mode)
 
-    if (tdesign.brandColor) {
-      const colorMap = generateColorMap(tdesign.brandColor, theme.mode)
+    const brandColor = tdesign.brandColor || '#1677FF'
+    const hex = brandColor.replace('#', '')
+    const r = parseInt(hex.substring(0, 2), 16)
+    const g = parseInt(hex.substring(2, 4), 16)
+    const b = parseInt(hex.substring(4, 6), 16)
+
+    root.style.setProperty('--ss-primary-color', brandColor)
+    root.style.setProperty('--ss-primary-rgb', `${r}, ${g}, ${b}`)
+    nextKeys.push('--ss-primary-color')
+    nextKeys.push('--ss-primary-rgb')
+
+    if (brandColor) {
+      const colorMap = generateColorMap(brandColor, theme.mode)
       Object.entries(colorMap).forEach(([key, value]) => {
         root.style.setProperty(key, value)
         nextKeys.push(key)
       })
 
-      root.style.setProperty('--ant-color-primary', tdesign.brandColor)
+      root.style.setProperty('--ant-color-primary', brandColor)
       nextKeys.push('--ant-color-primary')
-
-      const hex = tdesign.brandColor.replace('#', '')
-      const r = parseInt(hex.substring(0, 2), 16)
-      const g = parseInt(hex.substring(2, 4), 16)
-      const b = parseInt(hex.substring(4, 6), 16)
 
       root.style.setProperty('--ant-color-primary-hover', `rgba(${r}, ${g}, ${b}, 0.85)`)
       root.style.setProperty('--ant-color-primary-active', `rgba(${r}, ${g}, ${b}, 0.7)`)
@@ -70,6 +77,26 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       root.style.setProperty(key, value)
       nextKeys.push(key)
     })
+
+    const bgLight = custom['--ss-bg-color-light']
+    const bgDark = custom['--ss-bg-color-dark']
+    if (bgLight || bgDark) {
+      const resolved = theme.mode === 'dark' ? bgDark || bgLight : bgLight || bgDark
+      if (resolved) {
+        root.style.setProperty('--ss-bg-color', resolved)
+        nextKeys.push('--ss-bg-color')
+      }
+    }
+
+    if (!custom['--ss-sidebar-active-bg']) {
+      const alpha = theme.mode === 'dark' ? 0.22 : 0.12
+      root.style.setProperty('--ss-sidebar-active-bg', `rgba(${r}, ${g}, ${b}, ${alpha})`)
+      nextKeys.push('--ss-sidebar-active-bg')
+    }
+    if (!custom['--ss-sidebar-active-text']) {
+      root.style.setProperty('--ss-sidebar-active-text', brandColor)
+      nextKeys.push('--ss-sidebar-active-text')
+    }
 
     appliedStyleKeysRef.current = nextKeys
   }, [])
@@ -120,8 +147,15 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }
   }
 
+  const applyTheme = useCallback(
+    (theme: themeConfig) => {
+      applyThemeConfig(theme)
+    },
+    [applyThemeConfig]
+  )
+
   return (
-    <ThemeContext.Provider value={{ currentTheme, setTheme, themes }}>
+    <ThemeContext.Provider value={{ currentTheme, setTheme, themes, applyTheme }}>
       {children}
     </ThemeContext.Provider>
   )

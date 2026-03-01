@@ -82,7 +82,7 @@ export function MobileScore(): React.JSX.Element {
       setSelectedReason(null)
       setCustomScore('')
       setCustomReason('')
-    } catch (e) {
+    } catch {
       Toast.show({ content: '提交失败', icon: 'fail' })
     } finally {
       setSubmitting(false)

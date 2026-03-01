@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { Tabs, Card, Form, Select, Input, Button, Space, Divider, Tag, Modal, message } from 'antd'
-import { useTheme } from '../contexts/ThemeContext'
-import { useThemeEditor } from '../contexts/ThemeEditorContext'
+import { ThemeQuickSettings } from './ThemeQuickSettings'
 
 type permissionLevel = 'admin' | 'points' | 'view'
 type appSettings = {
@@ -12,8 +11,6 @@ type appSettings = {
 }
 
 export const Settings: React.FC<{ permission: permissionLevel }> = ({ permission }) => {
-  const { themes, currentTheme, setTheme } = useTheme()
-  const { startEditing } = useThemeEditor()
   const [activeTab, setActiveTab] = useState('appearance')
   const [settings, setSettings] = useState<appSettings>({
     is_wizard_completed: false,
@@ -313,22 +310,11 @@ export const Settings: React.FC<{ permission: permissionLevel }> = ({ permission
       label: '外观',
       children: (
         <Card style={{ backgroundColor: 'var(--ss-card-bg)', color: 'var(--ss-text-main)' }}>
-          <Form layout="horizontal" labelCol={{ span: 4 }} wrapperCol={{ span: 20 }}>
-            <Form.Item label="当前主题">
-              <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                <Select
-                  value={currentTheme?.id}
-                  onChange={(v) => setTheme(v as string)}
-                  style={{ width: '200px' }}
-                  options={themes.map((t) => ({ value: t.id, label: t.name }))}
-                />
-                <Button onClick={() => startEditing(currentTheme || undefined)}>编辑</Button>
-                <Button type="link" onClick={() => startEditing()}>
-                  新建主题
-                </Button>
-              </div>
-            </Form.Item>
+          <ThemeQuickSettings />
 
+          <Divider />
+
+          <Form layout="horizontal" labelCol={{ span: 4 }} wrapperCol={{ span: 20 }}>
             <Form.Item label="界面缩放">
               <Select
                 value={settings.window_zoom || '1.0'}
@@ -690,7 +676,6 @@ export const Settings: React.FC<{ permission: permissionLevel }> = ({ permission
           >
             <div>secscore://settings</div>
             <div>secscore://score</div>
-            <div>secscore://sidebar/toggle</div>
           </div>
           <Divider />
           <Space>
@@ -767,7 +752,14 @@ export const Settings: React.FC<{ permission: permissionLevel }> = ({ permission
   ]
 
   return (
-    <div style={{ padding: '24px', maxWidth: '900px', margin: '0 auto' }}>
+    <div
+      style={{
+        padding: '24px',
+        maxWidth: '900px',
+        margin: '0 auto',
+        color: 'var(--ss-text-main)'
+      }}
+    >
       {contextHolder}
       <div
         style={{
@@ -777,7 +769,7 @@ export const Settings: React.FC<{ permission: permissionLevel }> = ({ permission
           marginBottom: '16px'
         }}
       >
-        <h2 style={{ margin: 0, color: 'var(--ss-text-main)' }}>系统设置</h2>
+        <h2 style={{ margin: 0 }}>系统设置</h2>
         {permissionTag}
       </div>
 
@@ -871,7 +863,7 @@ export const Settings: React.FC<{ permission: permissionLevel }> = ({ permission
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
           <div>将把当前未结算的积分记录归档为一个阶段，并将所有学生当前积分清零。</div>
           <div style={{ color: 'var(--ss-text-secondary)', fontSize: '12px' }}>
-            学生名单不变；结算后的历史在"结算历史"页面查看。
+            学生名单不变；结算后的历史在“结算历史”页面查看。
           </div>
         </div>
       </Modal>

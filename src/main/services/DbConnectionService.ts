@@ -100,9 +100,7 @@ export class DbConnectionService extends Service {
       return { success: true }
     } catch (error: any) {
       if (this.testDataSource) {
-        try {
-          await this.testDataSource.destroy()
-        } catch {}
+        await this.testDataSource.destroy().catch(() => null)
         this.testDataSource = null
       }
       console.error('PostgreSQL connection test failed:', error)

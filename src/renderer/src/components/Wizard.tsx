@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import { Modal, Form, Select, message, Typography } from 'antd'
-import { useTheme } from '../contexts/ThemeContext'
+import { Modal, message, Typography } from 'antd'
+import { ThemeQuickSettings } from './ThemeQuickSettings'
 
 interface wizardProps {
   visible: boolean
@@ -8,7 +8,6 @@ interface wizardProps {
 }
 
 export const Wizard: React.FC<wizardProps> = ({ visible, onComplete }) => {
-  const { themes, currentTheme, setTheme } = useTheme()
   const [loading, setLoading] = useState(false)
   const [messageApi, contextHolder] = message.useMessage()
 
@@ -47,15 +46,7 @@ export const Wizard: React.FC<wizardProps> = ({ visible, onComplete }) => {
         感谢选择 SecScore。在开始之前，请花一分钟完成基础配置。
       </Typography.Paragraph>
 
-      <Form layout="horizontal" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
-        <Form.Item label="外观主题">
-          <Select
-            value={currentTheme?.id}
-            onChange={(v) => setTheme(v as string)}
-            options={themes.map((t) => ({ value: t.id, label: t.name }))}
-          />
-        </Form.Item>
-      </Form>
+      <ThemeQuickSettings compact />
     </Modal>
   )
 }

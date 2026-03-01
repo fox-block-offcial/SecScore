@@ -178,7 +178,7 @@ export const ThemeEditor: React.FC = () => {
                 </div>
                 <Row gutter={[12, 12]}>
                   {group.items.map((item) => (
-                    <Col span={6} key={item.key}>
+                    <Col span={groupKey === 'background' ? 12 : 6} key={item.key}>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                         <div
                           style={{
@@ -192,13 +192,33 @@ export const ThemeEditor: React.FC = () => {
                         >
                           {item.label}
                         </div>
-                        <ColorPicker
-                          value={editingTheme.config.custom[item.key] || '#ffffff'}
-                          onChange={(color: Color) =>
-                            updateConfig('custom', item.key, color.toHexString())
-                          }
-                          showText
-                        />
+                        {groupKey === 'background' ? (
+                          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                            <div
+                              style={{
+                                width: 32,
+                                height: 32,
+                                borderRadius: 6,
+                                border: '1px solid var(--ss-border-color)',
+                                background: editingTheme.config.custom[item.key] || '#ffffff',
+                                flexShrink: 0
+                              }}
+                            />
+                            <Input
+                              value={editingTheme.config.custom[item.key] || ''}
+                              onChange={(e) => updateConfig('custom', item.key, e.target.value)}
+                              placeholder="例如 #ffffff 或 linear-gradient(...)"
+                            />
+                          </div>
+                        ) : (
+                          <ColorPicker
+                            value={editingTheme.config.custom[item.key] || '#ffffff'}
+                            onChange={(color: Color) =>
+                              updateConfig('custom', item.key, color.toHexString())
+                            }
+                            showText
+                          />
+                        )}
                       </div>
                     </Col>
                   ))}
