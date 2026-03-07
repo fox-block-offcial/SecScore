@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { PlusOutlined, HolderOutlined } from '@ant-design/icons'
+import { useTranslation } from 'react-i18next'
 import { allTriggers, allActions, triggerRegistry, actionRegistry } from './com.automatically'
 import type { TriggerItem, ActionItem } from './com.automatically/types'
 import TriggerItemComponent from './com.automatically/TriggerItem'
@@ -36,6 +37,7 @@ interface AutoScoreRuleFormValues {
 }
 
 export const AutoScoreManager: React.FC = () => {
+  const { t } = useTranslation()
   const [rules, setRules] = useState<AutoScoreRule[]>([])
   const [students, setStudents] = useState<{ id: number; name: string }[]>([])
   const [loading, setLoading] = useState(false)
@@ -55,7 +57,7 @@ export const AutoScoreManager: React.FC = () => {
       try {
         const authRes = await (window as any).api.authGetStatus()
         if (!authRes || !authRes.success || authRes.data?.permission !== 'admin') {
-          messageApi.error('需要管理员权限以查看自动加分自动化，请先登录管理员账号')
+          messageApi.error(t('autoScore.adminRequired'))
           setLoading(false)
           return
         }
@@ -70,14 +72,14 @@ export const AutoScoreManager: React.FC = () => {
       if (rulesRes.success) {
         setRules(rulesRes.data)
       } else {
-        messageApi.error(rulesRes.message || '获取自动化失败')
+        messageApi.error(rulesRes.message || t('autoScore.fetchFailed'))
       }
       if (studentsRes.success) {
         setStudents(studentsRes.data)
       }
     } catch (error) {
       console.error('Failed to fetch auto score rules:', error)
-      messageApi.error('获取自动化失败')
+      messageApi.error(t('autoScore.fetchFailed'))
     } finally {
       setLoading(false)
     }
@@ -93,17 +95,17 @@ export const AutoScoreManager: React.FC = () => {
     const values = form.getFieldsValue(true) as unknown as AutoScoreRuleFormValues
 
     if (!values.name) {
-      messageApi.warning('请填写自动化名称')
+      messageApi.warning(t('autoScore.nameRequired'))
       return
     }
 
     if (triggerList.length === 0) {
-      messageApi.warning('请至少添加一个触发器')
+      messageApi.warning(t('autoScore.triggerRequired'))
       return
     }
 
     if (actionList.length === 0) {
-      messageApi.warning('请至少添加一个行动')
+      messageApi.warning(t('autoScore.actionRequired'))
       return
     }
 
@@ -131,7 +133,7 @@ export const AutoScoreManager: React.FC = () => {
     try {
       const authRes = await (window as any).api.authGetStatus()
       if (!authRes || !authRes.success || authRes.data?.permission !== 'admin') {
-        messageApi.error('需要管理员权限以创建或更新自动加分自动化')
+        messageApi.error(t('autoScore.adminCreateRequired'))
         return
       }
     } catch (e) {
@@ -150,7 +152,9 @@ export const AutoScoreManager: React.FC = () => {
       }
 
       if (res.success) {
-        messageApi.success(editingRuleId !== null ? '自动化更新成功' : '自动化创建成功')
+        messageApi.success(
+          editingRuleId !== null ? t('autoScore.updateSuccess') : t('autoScore.createSuccess')
+        )
         form.setFieldsValue({
           name: '',
           studentNames: ''
@@ -161,12 +165,15 @@ export const AutoScoreManager: React.FC = () => {
         fetchRules()
       } else {
         messageApi.error(
-          res.message || (editingRuleId !== null ? '更新自动化失败' : '创建自动化失败')
+          res.message ||
+            (editingRuleId !== null ? t('autoScore.updateFailed') : t('autoScore.createFailed'))
         )
       }
     } catch (error) {
       console.error('Failed to submit auto score rule:', error)
-      messageApi.error(editingRuleId !== null ? '更新自动化失败' : '创建自动化失败')
+      messageApi.error(
+        editingRuleId !== null ? t('autoScore.updateFailed') : t('autoScore.createFailed')
+      )
     }
   }
 
@@ -205,7 +212,7 @@ export const AutoScoreManager: React.FC = () => {
     try {
       const authRes = await (window as any).api.authGetStatus()
       if (!authRes || !authRes.success || authRes.data?.permission !== 'admin') {
-        messageApi.error('需要管理员权限以删除自动加分自动化')
+        messageApi.error(t('autoScore.adminDeleteRequired'))
         return
       }
     } catch (e) {
@@ -215,14 +222,14 @@ export const AutoScoreManager: React.FC = () => {
     try {
       const res = await (window as any).api.invoke('auto-score:deleteRule', ruleId)
       if (res.success) {
-        messageApi.success('自动化删除成功')
+        messageApi.success(t('autoScore.deleteSuccess'))
         fetchRules()
       } else {
-        messageApi.error(res.message || '删除自动化失败')
+        messageApi.error(res.message || t('autoScore.deleteFailed'))
       }
     } catch (error) {
       console.error('Failed to delete auto score rule:', error)
-      messageApi.error('删除自动化失败')
+      messageApi.error(t('autoScore.deleteFailed'))
     }
   }
 
@@ -231,7 +238,7 @@ export const AutoScoreManager: React.FC = () => {
     try {
       const authRes = await (window as any).api.authGetStatus()
       if (!authRes || !authRes.success || authRes.data?.permission !== 'admin') {
-        messageApi.error('需要管理员权限以启用/禁用自动加分自动化')
+        messageApi.error(t('autoScore.adminToggleRequired'))
         return
       }
     } catch (e) {
@@ -241,14 +248,16 @@ export const AutoScoreManager: React.FC = () => {
     try {
       const res = await (window as any).api.invoke('auto-score:toggleRule', { ruleId, enabled })
       if (res.success) {
-        messageApi.success(enabled ? '自动化已启用' : '自动化已禁用')
+        messageApi.success(enabled ? t('autoScore.enabled') : t('autoScore.disabled'))
         fetchRules()
       } else {
-        messageApi.error(res.message || (enabled ? '启用自动化失败' : '禁用自动化失败'))
+        messageApi.error(
+          res.message || (enabled ? t('autoScore.enableFailed') : t('autoScore.disableFailed'))
+        )
       }
     } catch (error) {
       console.error('Failed to toggle auto score rule:', error)
-      messageApi.error(enabled ? '启用自动化失败' : '禁用自动化失败')
+      messageApi.error(enabled ? t('autoScore.enableFailed') : t('autoScore.disableFailed'))
     }
   }
 
@@ -266,7 +275,7 @@ export const AutoScoreManager: React.FC = () => {
     const nextId = triggerList.length ? Math.max(...triggerList.map((t) => t.id)) + 1 : 1
     const defaultTrigger = allTriggers.list[0]
     if (!defaultTrigger) {
-      messageApi.error('没有可用的触发器类型，请检查配置')
+      messageApi.error(t('autoScore.noTriggerAvailable'))
       return
     }
     setTriggerList((prev) => [
@@ -300,7 +309,7 @@ export const AutoScoreManager: React.FC = () => {
     const nextId = actionList.length ? Math.max(...actionList.map((a) => a.id)) + 1 : 1
     const defaultAction = allActions.list[0]
     if (!defaultAction) {
-      messageApi.error('没有可用的行动类型，请检查配置')
+      messageApi.error(t('autoScore.noActionAvailable'))
       return
     }
     setActionList((prev) => [
@@ -333,12 +342,12 @@ export const AutoScoreManager: React.FC = () => {
   const columns: ColumnsType<AutoScoreRule> = [
     {
       key: 'drag',
-      title: '排序',
+      title: t('autoScore.sort'),
       width: 60,
       render: () => <HolderOutlined style={{ cursor: 'move' }} />
     },
     {
-      title: '状态',
+      title: t('autoScore.status'),
       dataIndex: 'enabled',
       key: 'enabled',
       width: 80,
@@ -346,15 +355,15 @@ export const AutoScoreManager: React.FC = () => {
         <Switch checked={enabled} onChange={(value) => handleToggle(row.id, value)} size="small" />
       )
     },
-    { title: '自动化名称', dataIndex: 'name', key: 'name', width: 150 },
+    { title: t('autoScore.name'), dataIndex: 'name', key: 'name', width: 150 },
     {
-      title: '触发器',
+      title: t('autoScore.triggers'),
       dataIndex: 'triggers',
       key: 'triggers',
       width: 150,
       render: (triggers: AutoScoreRule['triggers']) => {
         if (!triggers || triggers.length === 0) {
-          return <span>无</span>
+          return <span>{t('common.none')}</span>
         }
         const triggerLabels = triggers.map((t) => {
           const def = triggerRegistry.get(t.event)
@@ -362,19 +371,19 @@ export const AutoScoreManager: React.FC = () => {
         })
         return (
           <Tooltip title={triggerLabels.join(', ')}>
-            <span>{triggers.length} 个触发器</span>
+            <span>{t('autoScore.triggerCount', { count: triggers.length })}</span>
           </Tooltip>
         )
       }
     },
     {
-      title: '行动',
+      title: t('autoScore.actions'),
       dataIndex: 'actions',
       key: 'actions',
       width: 150,
       render: (actions: AutoScoreRule['actions']) => {
         if (!actions || actions.length === 0) {
-          return <span>无</span>
+          return <span>{t('common.none')}</span>
         }
         const actionLabels = actions.map((a) => {
           const def = actionRegistry.get(a.event)
@@ -382,55 +391,55 @@ export const AutoScoreManager: React.FC = () => {
         })
         return (
           <Tooltip title={actionLabels.join(', ')}>
-            <span>{actions.length} 个行动</span>
+            <span>{t('autoScore.actionCount', { count: actions.length })}</span>
           </Tooltip>
         )
       }
     },
     {
-      title: '适用学生',
+      title: t('autoScore.applicableStudents'),
       dataIndex: 'studentNames',
       key: 'studentNames',
       width: 130,
       render: (studentNames: string[]) => {
         if (!studentNames || studentNames.length === 0) {
-          return <span>所有学生</span>
+          return <span>{t('autoScore.allStudents')}</span>
         }
         const studentList = studentNames.join(',\n')
         return (
           <Tooltip title={studentList}>
-            <span>{studentNames.length} 名学生</span>
+            <span>{t('autoScore.studentCount', { count: studentNames.length })}</span>
           </Tooltip>
         )
       }
     },
     {
-      title: '最后执行',
+      title: t('autoScore.lastExecuted'),
       dataIndex: 'lastExecuted',
       key: 'lastExecuted',
       width: 180,
       render: (lastExecuted: string) => {
-        if (!lastExecuted) return <span>未执行</span>
+        if (!lastExecuted) return <span>{t('autoScore.notExecuted')}</span>
         try {
           const date = new Date(lastExecuted)
           return date.toLocaleString()
         } catch {
-          return <span>无效时间</span>
+          return <span>{t('autoScore.invalidTime')}</span>
         }
       }
     },
     {
-      title: '操作',
+      title: t('common.operation'),
       key: 'operation',
       width: 150,
       render: (_, row) => (
         <Space>
           <Button size="small" onClick={() => handleEdit(row)}>
-            编辑
+            {t('common.edit')}
           </Button>
-          <Popconfirm title="确定要删除这条自动化吗？" onConfirm={() => handleDelete(row.id)}>
+          <Popconfirm title={t('autoScore.deleteConfirm')} onConfirm={() => handleDelete(row.id)}>
             <Button size="small" danger>
-              删除
+              {t('common.delete')}
             </Button>
           </Popconfirm>
         </Space>
@@ -468,24 +477,24 @@ export const AutoScoreManager: React.FC = () => {
   return (
     <div style={{ padding: '24px' }}>
       {contextHolder}
-      <h2 style={{ marginBottom: '24px', color: 'var(--ss-text-main)' }}>自动化加分管理</h2>
+      <h2 style={{ marginBottom: '24px', color: 'var(--ss-text-main)' }}>{t('autoScore.title')}</h2>
 
       <Card style={{ marginBottom: '24px', backgroundColor: 'var(--ss-card-bg)' }}>
         <Form form={form} layout="vertical">
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
             <Form.Item
-              label="自动化名称"
+              label={t('autoScore.name')}
               name="name"
-              rules={[{ required: true, message: '请输入自动化名称' }]}
+              rules={[{ required: true, message: t('autoScore.nameRequired') }]}
             >
-              <Input placeholder="例如：每日签到加分" />
+              <Input placeholder={t('autoScore.namePlaceholder')} />
             </Form.Item>
 
-            <Form.Item label="适用学生" name="studentNames">
+            <Form.Item label={t('autoScore.applicableStudents')} name="studentNames">
               <Select
                 mode="multiple"
                 showSearch
-                placeholder="请选择或搜索学生（留空表示所有学生）"
+                placeholder={t('autoScore.studentPlaceholder')}
                 options={students.map((student) => ({ label: student.name, value: student.name }))}
               />
             </Form.Item>
@@ -493,10 +502,12 @@ export const AutoScoreManager: React.FC = () => {
 
           <div style={{ marginTop: '24px', display: 'flex', gap: '12px' }}>
             <Button type="primary" onClick={handleSubmit}>
-              {editingRuleId !== null ? '更新自动化' : '添加自动化'}
+              {editingRuleId !== null
+                ? t('autoScore.updateAutomation')
+                : t('autoScore.addAutomation')}
             </Button>
             <Button onClick={handleResetForm}>
-              {editingRuleId !== null ? '取消编辑' : '重置表单'}
+              {editingRuleId !== null ? t('autoScore.cancelEdit') : t('autoScore.resetForm')}
             </Button>
           </div>
         </Form>
@@ -504,7 +515,7 @@ export const AutoScoreManager: React.FC = () => {
 
       <Card
         style={{ marginBottom: '24px', backgroundColor: 'var(--ss-card-bg)' }}
-        title="当以下规则触发时"
+        title={t('autoScore.whenTriggered')}
       >
         <Space orientation="vertical" style={{ width: '100%' }}>
           {triggerItems}
@@ -514,14 +525,14 @@ export const AutoScoreManager: React.FC = () => {
             onClick={handleAddTrigger}
             style={{ fontWeight: 'bolder', fontSize: 15 }}
           >
-            添加规则
+            {t('autoScore.addTrigger')}
           </Button>
         </Space>
       </Card>
 
       <Card
         style={{ marginBottom: '24px', backgroundColor: 'var(--ss-card-bg)' }}
-        title="满足规则时触发的行动"
+        title={t('autoScore.triggeredActions')}
       >
         <Space orientation="vertical" style={{ width: '100%' }}>
           {actionItems}
@@ -531,7 +542,7 @@ export const AutoScoreManager: React.FC = () => {
             onClick={handleAddAction}
             style={{ fontWeight: 'bolder', fontSize: 15 }}
           >
-            添加行动
+            {t('autoScore.addAction')}
           </Button>
         </Space>
       </Card>
@@ -555,7 +566,7 @@ export const AutoScoreManager: React.FC = () => {
               setPageSize(size)
             }}
             showSizeChanger
-            showTotal={(total) => `共 ${total} 条`}
+            showTotal={(total) => t('common.total', { count: total })}
           />
         </div>
       </Card>
