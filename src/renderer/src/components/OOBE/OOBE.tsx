@@ -598,7 +598,9 @@ export const OOBE: React.FC<oobeProps> = ({ visible, onComplete }) => {
                 }}
               >
                 <span style={{ color: '#52c41a' }}>✓</span>
-                <span>{t('oobe.steps.start.features.score')}</span>
+                <span style={{ color: isDark ? '#fff' : 'rgba(0, 0, 0, 0.88)' }}>
+                  {t('oobe.steps.start.features.score')}
+                </span>
               </div>
               <div
                 style={{
@@ -611,7 +613,9 @@ export const OOBE: React.FC<oobeProps> = ({ visible, onComplete }) => {
                 }}
               >
                 <span style={{ color: '#52c41a' }}>✓</span>
-                <span>{t('oobe.steps.start.features.history')}</span>
+                <span style={{ color: isDark ? '#fff' : 'rgba(0, 0, 0, 0.88)' }}>
+                  {t('oobe.steps.start.features.history')}
+                </span>
               </div>
               <div
                 style={{
@@ -624,7 +628,9 @@ export const OOBE: React.FC<oobeProps> = ({ visible, onComplete }) => {
                 }}
               >
                 <span style={{ color: '#52c41a' }}>✓</span>
-                <span>{t('oobe.steps.start.features.settlement')}</span>
+                <span style={{ color: isDark ? '#fff' : 'rgba(0, 0, 0, 0.88)' }}>
+                  {t('oobe.steps.start.features.settlement')}
+                </span>
               </div>
             </div>
           </div>
@@ -659,7 +665,9 @@ export const OOBE: React.FC<oobeProps> = ({ visible, onComplete }) => {
           width: 480,
           maxWidth: '90vw',
           boxShadow: isDark ? '0 8px 32px rgba(0, 0, 0, 0.3)' : '0 8px 32px rgba(0, 0, 0, 0.1)',
-          border: isDark ? '1px solid rgba(255, 255, 255, 0.08)' : '1px solid rgba(0, 0, 0, 0.06)'
+          border: isDark ? '1px solid rgba(255, 255, 255, 0.08)' : '1px solid rgba(0, 0, 0, 0.06)',
+          fontFamily:
+            '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", sans-serif, "Apple Color Emoji", "Segoe UI Emoji"'
         }}
       >
         {contextHolder}

@@ -1,5 +1,7 @@
 .queryBuilder {
-  --querybuilder-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+  --querybuilder-font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans',
+    sans-serif;
   --querybuilder-background: var(--ss-card-bg, #ffffff);
   --querybuilder-color: var(--ss-text-main, rgba(0, 0, 0, 0.85));
   --querybuilder-border-radius: 6px;

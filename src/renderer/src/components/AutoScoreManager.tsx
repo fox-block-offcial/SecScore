@@ -42,10 +42,6 @@ interface ActionItem {
   value: string
   reason: string
 }
-interface TagItem {
-  id: number
-  name: string
-}
 
 interface AutoScoreRuleFormValues {
   name: string
@@ -65,7 +61,6 @@ const ACTION_DEFINITIONS = [
 export const AutoScoreManager: React.FC = () => {
   const { t } = useTranslation()
   const [rules, setRules] = useState<AutoScoreRule[]>([])
-  const [allTags, setAllTags] = useState<TagItem[]>([])
   const [students, setStudents] = useState<{ id: number; name: string }[]>([])
   const [loading, setLoading] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
@@ -83,19 +78,6 @@ export const AutoScoreManager: React.FC = () => {
   const getActionLabel = (eventName: string): string => {
     const def = ACTION_DEFINITIONS.find((d) => d.eventName === eventName)
     return def ? t(def.labelKey) : eventName
-  }
-
-  async function fetchAllTags() {
-    if (!(window as any).api) return
-    try {
-      const res = await (window as any).api.tagsGetAll()
-      if (res.success && res.data) {
-        setAllTags(res.data)
-      }
-    } catch (e) {
-      console.error('Failed to fetch tags:', e)
-      messageApi.error(t('tags.fetchFailed'))
-    }
   }
 
   const fetchRules = async () => {
@@ -333,20 +315,6 @@ export const AutoScoreManager: React.FC = () => {
     ])
   }
 
-  const handleRemoveTrigger = (id: number) => {
-    setTriggerList((prev) => prev.filter((t) => t.id !== id))
-  }
-
-  const handleTriggerChange = (
-    id: number,
-    field: keyof TriggerItem,
-    value: string | number | 'AND' | 'OR'
-  ) => {
-    setTriggerList((prev) =>
-      prev.map((t) => (t.id === id ? { ...t, [field]: value } : t))
-    )
-  }
-
   const handleAddAction = () => {
     const nextId = actionList.length ? Math.max(...actionList.map((a) => a.id)) + 1 : 1
     const defaultAction = ACTION_DEFINITIONS[0]
@@ -369,14 +337,8 @@ export const AutoScoreManager: React.FC = () => {
     setActionList((prev) => prev.filter((a) => a.id !== id))
   }
 
-  const handleActionChange = (
-    id: number,
-    field: keyof ActionItem,
-    value: string | number
-  ) => {
-    setActionList((prev) =>
-      prev.map((a) => (a.id === id ? { ...a, [field]: value } : a))
-    )
+  const handleActionChange = (id: number, field: keyof ActionItem, value: string | number) => {
+    setActionList((prev) => prev.map((a) => (a.id === id ? { ...a, [field]: value } : a)))
   }
 
   const columns: ColumnsType<AutoScoreRule> = [
@@ -481,72 +443,6 @@ export const AutoScoreManager: React.FC = () => {
     }
   ]
 
-  const renderTriggerItem = (trigger: TriggerItem, index: number) => (
-    <div
-      key={trigger.id}
-      style={{
-        padding: '12px',
-        border: '1px solid #d9d9d9',
-        borderRadius: '6px',
-        backgroundColor: 'var(--ss-card-bg)',
-        marginBottom: '8px'
-      }}
-    >
-      <Space wrap>
-        {index > 0 && (
-          <Select
-            value={trigger.relation}
-            onChange={(value) => handleTriggerChange(trigger.id, 'relation', value)}
-            style={{ width: 80 }}
-            options={[
-              { label: 'AND', value: 'AND' },
-              { label: 'OR', value: 'OR' }
-            ]}
-          />
-        )}
-        <Select
-          value={trigger.eventName}
-          onChange={(value) => handleTriggerChange(trigger.id, 'eventName', value)}
-          style={{ width: 150 }}
-          options={TRIGGER_DEFINITIONS.map((d) => ({
-            label: t(d.labelKey),
-            value: d.eventName
-          }))}
-        />
-        {trigger.eventName === 'interval_time_passed' && (
-          <InputNumber
-            value={trigger.value ? parseInt(trigger.value) : undefined}
-            onChange={(value) => handleTriggerChange(trigger.id, 'value', String(value || 0))}
-            placeholder={t('autoScore.minutesPlaceholder')}
-            min={1}
-            style={{ width: 120 }}
-            addonAfter={t('autoScore.minutes')}
-          />
-        )}
-        {trigger.eventName === 'student_has_tag' && (
-          <Select
-            mode="multiple"
-            allowClear
-            value={trigger.value}
-            onChange={(value) => handleTriggerChange(trigger.id, 'value', value)}
-            onClick={fetchAllTags}
-            style={{ width: 380 }}
-            options={allTags.map((tag) => ({
-              label: tag.name,
-              value: tag.name
-            }))}
-          />
-        )}
-        <Button
-          type="text"
-          danger
-          icon={<DeleteOutlined />}
-          onClick={() => handleRemoveTrigger(trigger.id)}
-        />
-      </Space>
-    </div>
-  )
-
   const renderActionItem = (action: ActionItem) => (
     <div
       key={action.id}
@@ -635,9 +531,10 @@ export const AutoScoreManager: React.FC = () => {
         title={t('autoScore.whenTriggered')}
       >
         <Space orientation="vertical" style={{ width: '100%' }}>
-{/*             {triggerList.map((trigger, index) => renderTriggerItem(trigger, index))} 
- */}            <RuleComponent />
-            <Button
+          {/*             {triggerList.map((trigger, index) => renderTriggerItem(trigger, index))}
+           */}{' '}
+          <RuleComponent />
+          <Button
             type="dashed"
             icon={<PlusOutlined />}
             onClick={handleAddTrigger}
@@ -652,7 +549,7 @@ export const AutoScoreManager: React.FC = () => {
         style={{ marginBottom: '24px', backgroundColor: 'var(--ss-card-bg)' }}
         title={t('autoScore.triggeredActions')}
       >
-        <Space direction="vertical" style={{ width: '100%' }}>
+        <Space orientation="vertical" style={{ width: '100%' }}>
           {actionList.map((action) => renderActionItem(action))}
           <Button
             type="dashed"
@@ -667,9 +564,7 @@ export const AutoScoreManager: React.FC = () => {
 
       <div style={{ marginBottom: '24px', display: 'flex', gap: '12px' }}>
         <Button type="primary" onClick={handleSubmit}>
-          {editingRuleId !== null
-            ? t('autoScore.updateAutomation')
-            : t('autoScore.addAutomation')}
+          {editingRuleId !== null ? t('autoScore.updateAutomation') : t('autoScore.addAutomation')}
         </Button>
         <Button onClick={handleResetForm}>
           {editingRuleId !== null ? t('autoScore.cancelEdit') : t('autoScore.resetForm')}

@@ -477,7 +477,7 @@ export const StudentManager: React.FC<{ canEdit: boolean }> = ({ canEdit }) => {
         footer={null}
         destroyOnHidden
       >
-        <Space direction="vertical" style={{ width: '100%' }}>
+        <Space orientation="vertical" style={{ width: '100%' }}>
           <Button
             loading={xlsxLoading}
             disabled={!canEdit}

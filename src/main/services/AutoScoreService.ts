@@ -1,6 +1,10 @@
 import { Service } from '../../shared/kernel'
 import { MainContext } from '../context'
-import { AutoScoreRuleEngine, type RuleConfig, type AutoScoreContext } from '../../shared/autoScore/AutoScoreRuleEngine'
+import {
+  AutoScoreRuleEngine,
+  type RuleConfig,
+  type AutoScoreContext
+} from '../../shared/autoScore/AutoScoreRuleEngine'
 
 interface AutoScoreRule extends RuleConfig {
   id: number
@@ -385,7 +389,7 @@ export class AutoScoreService extends Service {
           id: s.id,
           name: s.name,
           tags: s.tags || [],
-          lastScoreTime: lastScoreTimeMap.get(s.name) || new Date(0),
+          lastScoreTime: lastScoreTimeMap.get(s.name) || new Date(0)
         })),
         events: [],
         rule: {

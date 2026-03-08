@@ -1,5 +1,5 @@
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
-import { Layout, TabBar } from 'antd-mobile'
+import { TabBar } from 'antd-mobile'
 import {
   HomeOutlined,
   PlusCircleOutlined,
@@ -7,8 +7,6 @@ import {
   SettingOutlined
 } from '@ant-design/icons'
 import { useTheme } from '../App'
-
-const { Content } = Layout
 
 const tabs = [
   { key: '/', title: '主页', icon: <HomeOutlined /> },
@@ -23,15 +21,15 @@ export function MobileLayout(): React.JSX.Element {
   const { isDark } = useTheme()
 
   return (
-    <Layout
+    <div
       style={{
         minHeight: '100vh',
         backgroundColor: isDark ? '#1a1a1a' : '#f5f5f5'
       }}
     >
-      <Content style={{ paddingBottom: '50px' }}>
+      <div style={{ paddingBottom: '50px' }}>
         <Outlet />
-      </Content>
+      </div>
       <div
         style={{
           position: 'fixed',
@@ -57,6 +55,6 @@ export function MobileLayout(): React.JSX.Element {
           }}
         />
       </div>
-    </Layout>
+    </div>
   )
 }

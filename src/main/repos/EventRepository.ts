@@ -225,9 +225,7 @@ export class EventRepository extends Service {
     return { startTime, rows }
   }
 
-  async getLastScoreTimeByStudents(
-    studentNames: string[]
-  ): Promise<Map<string, Date>> {
+  async getLastScoreTimeByStudents(studentNames: string[]): Promise<Map<string, Date>> {
     if (studentNames.length === 0) return new Map()
 
     const repo = this.ctx.db.dataSource.getRepository(ScoreEventEntity)

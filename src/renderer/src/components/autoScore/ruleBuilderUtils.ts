@@ -42,15 +42,15 @@ export const ACTION_TYPE_KEYS = {
 
 // Function to get fields with i18n support
 export const getFields = (t: (key: string) => string): Field[] => [
-  { 
-    name: 'interval_time_passed', 
-    label: t('autoScore.triggerIntervalTime'), 
-    placeholder: t('autoScore.intervalMinutesPlaceholder') 
+  {
+    name: 'interval_time_passed',
+    label: t('autoScore.triggerIntervalTime'),
+    placeholder: t('autoScore.intervalMinutesPlaceholder')
   },
-  { 
-    name: 'student_has_tag', 
-    label: t('autoScore.triggerStudentTag'), 
-    placeholder: t('autoScore.tagNamesPlaceholder') 
+  {
+    name: 'student_has_tag',
+    label: t('autoScore.triggerStudentTag'),
+    placeholder: t('autoScore.tagNamesPlaceholder')
   }
 ]
 

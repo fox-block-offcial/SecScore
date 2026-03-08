@@ -1,5 +1,5 @@
 import React, { Suspense, lazy } from 'react'
-import { Layout, Space, Button, Tag } from 'antd'
+import { Layout, Space, Button, Tag, Spin } from 'antd'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
@@ -104,19 +104,12 @@ export function ContentArea({
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                height: '100%'
+                height: '100%',
+                flexDirection: 'column',
+                gap: 16
               }}
             >
-              <div
-                style={{
-                  width: '40px',
-                  height: '40px',
-                  border: '3px solid var(--ss-border-color)',
-                  borderTopColor: 'var(--ant-color-primary)',
-                  borderRadius: '50%',
-                  animation: 'spin 1s linear infinite'
-                }}
-              />
+              <Spin size="large" />
             </div>
           }
         >

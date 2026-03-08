@@ -90,10 +90,11 @@ export class AutoScoreRuleEngine {
     students: AutoScoreContext['students'],
     value: string | undefined
   ): Set<number> {
-    const requiredTags = value
-      ?.split(',')
-      .map((t) => t.trim())
-      .filter(Boolean) || []
+    const requiredTags =
+      value
+        ?.split(',')
+        .map((t) => t.trim())
+        .filter(Boolean) || []
 
     if (requiredTags.length === 0) return new Set()
 
@@ -136,11 +137,7 @@ export class AutoScoreRuleEngine {
 
         switch (trigger.event) {
           case 'interval_time_passed':
-            matchedIds = this.checkIntervalTimeTrigger(
-              context.students,
-              trigger.value,
-              context.now
-            )
+            matchedIds = this.checkIntervalTimeTrigger(context.students, trigger.value, context.now)
             break
           case 'student_has_tag':
             matchedIds = this.checkStudentTagTrigger(context.students, trigger.value)

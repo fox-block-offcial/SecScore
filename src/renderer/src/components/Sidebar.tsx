@@ -226,7 +226,7 @@ export function Sidebar({ activeMenu, permission, onMenuChange }: SidebarProps):
             backgroundColor: 'var(--ss-card-bg)',
             border: '1px solid var(--ss-border-color)'
           }}
-          bodyStyle={{ padding: '12px' }}
+          styles={{ body: { padding: '12px' } }}
         >
           {contextHolder}
           <Space orientation="vertical" size={4} style={{ width: '100%' }}>
