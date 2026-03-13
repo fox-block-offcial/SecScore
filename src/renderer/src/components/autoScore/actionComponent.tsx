@@ -1,19 +1,15 @@
 import { Space, Input, InputNumber, Select, Button } from 'antd'
 import { PlusOutlined, DeleteOutlined } from '@ant-design/icons'
 import { useTranslation } from 'react-i18next'
-import type { AutoScoreAction } from './ruleBuilderUtils'
+import type { ActionItem } from './types'
+import { ACTION_DEFINITIONS, SCORE_RANGE } from './constants'
 
 interface ActionComponentProps {
-  actions: AutoScoreAction[]
+  actions: ActionItem[]
   onAdd: () => void
-  onRemove: (index: number) => void
-  onChange: (index: number, field: keyof AutoScoreAction, value: any) => void
+  onRemove: (id: number) => void
+  onChange: (id: number, field: keyof ActionItem, value: string | number) => void
 }
-
-const ACTION_DEFINITIONS = [
-  { eventName: 'add_score', labelKey: 'autoScore.actionAddScore' },
-  { eventName: 'add_tag', labelKey: 'autoScore.actionAddTag' }
-]
 
 export const ActionComponent: React.FC<ActionComponentProps> = ({
   actions,
@@ -23,16 +19,16 @@ export const ActionComponent: React.FC<ActionComponentProps> = ({
 }) => {
   const { t } = useTranslation()
 
-  const handleActionChange = (index: number, field: keyof AutoScoreAction, value: any) => {
-    onChange(index, field, value)
+  const handleActionChange = (id: number, field: keyof ActionItem, value: string | number) => {
+    onChange(id, field, value)
   }
 
   return (
     <div>
-      <Space orientation="vertical" style={{ width: '100%' }}>
-        {actions.map((action, index) => (
+      <Space direction="vertical" style={{ width: '100%' }}>
+        {actions.map((action) => (
           <div
-            key={index}
+            key={action.id}
             style={{
               padding: '12px',
               border: '1px solid #d9d9d9',
@@ -42,8 +38,8 @@ export const ActionComponent: React.FC<ActionComponentProps> = ({
           >
             <Space style={{ width: '100%' }} wrap>
               <Select
-                value={action.event}
-                onChange={(value) => handleActionChange(index, 'event', value)}
+                value={action.eventName}
+                onChange={(value) => handleActionChange(action.id, 'eventName', value)}
                 style={{ width: 150 }}
                 options={ACTION_DEFINITIONS.map((d) => ({
                   label: t(d.labelKey),
@@ -51,30 +47,30 @@ export const ActionComponent: React.FC<ActionComponentProps> = ({
                 }))}
               />
 
-              {action.event === 'add_score' && (
+              {action.eventName === 'add_score' && (
                 <InputNumber
-                  value={action.value ? parseInt(action.value) : 0}
-                  onChange={(value) => handleActionChange(index, 'value', String(value || 0))}
-                  placeholder={t('autoScore.scoreLabel')}
-                  min={-100}
-                  max={100}
+                  value={action.value ? parseInt(action.value) : undefined}
+                  onChange={(value) => handleActionChange(action.id, 'value', String(value || 0))}
+                  placeholder={t('autoScore.scorePlaceholder')}
+                  min={SCORE_RANGE.MIN}
+                  max={SCORE_RANGE.MAX}
                   style={{ width: 120 }}
                 />
               )}
 
-              {action.event === 'add_tag' && (
+              {action.eventName === 'add_tag' && (
                 <Input
                   value={action.value}
-                  onChange={(e) => handleActionChange(index, 'value', e.target.value)}
-                  placeholder={t('autoScore.tagNameLabel')}
+                  onChange={(e) => handleActionChange(action.id, 'value', e.target.value)}
+                  placeholder={t('autoScore.tagNamePlaceholder')}
                   style={{ width: 200 }}
                 />
               )}
 
               <Input
                 value={action.reason}
-                onChange={(e) => handleActionChange(index, 'reason', e.target.value)}
-                placeholder={t('autoScore.operationNoteLabel')}
+                onChange={(e) => handleActionChange(action.id, 'reason', e.target.value)}
+                placeholder={t('autoScore.reasonPlaceholder')}
                 style={{ flex: 1, minWidth: 200 }}
               />
 
@@ -82,14 +78,14 @@ export const ActionComponent: React.FC<ActionComponentProps> = ({
                 type="text"
                 danger
                 icon={<DeleteOutlined />}
-                onClick={() => onRemove(index)}
+                onClick={() => onRemove(action.id)}
               />
             </Space>
           </div>
         ))}
 
         <Button type="dashed" icon={<PlusOutlined />} onClick={onAdd} block>
-          {t('autoScore.addOperation')}
+          {t('autoScore.addAction')}
         </Button>
       </Space>
     </div>

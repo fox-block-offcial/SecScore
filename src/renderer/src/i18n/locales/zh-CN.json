@@ -502,8 +502,6 @@
     "scoreLabel": "分数",
     "tagNameLabel": "标签名称",
     "operationNoteLabel": "操作说明（可选）",
-    "intervalMinutesPlaceholder": "例如：1440",
-    "tagNamesPlaceholder": "例如：优秀学生,班干部",
     "triggerIntervalTime": "间隔时间",
     "triggerStudentTag": "学生标签",
     "actionAddScore": "加分",
@@ -513,11 +511,13 @@
     "tagsPlaceholder": "请输入标签名称",
     "scorePlaceholder": "请输入分数",
     "tagNamePlaceholder": "请输入标签名称",
-    "reasonPlaceholder": "请输入理由"
+    "reasonPlaceholder": "请输入理由",
+    "relationAnd": "并且",
+    "relationOr": "或者"
   },
   "triggers": {
     "studentTag": {
-      "label": "当学生匹配标签时触发",
+      "label": "学生标签",
       "description": "当学生匹配特定标签时触发自动化",
       "placeholder": "请选择标签",
       "required": "请输入标签名称"
@@ -525,21 +525,16 @@
     "randomTime": {
       "label": "随机时间触发",
       "description": "在指定时间范围内随机触发自动化",
-      "from": "从",
-      "to": "到",
-      "hour": "时",
-      "minHourPlaceholder": "最小小时",
-      "maxHourPlaceholder": "最大小时",
       "required": "请输入有效的时间范围（分钟）"
     },
     "intervalTime": {
-      "label": "根据间隔时间触发",
+      "label": "间隔时间",
       "description": "当间隔时间到达时触发自动化",
-      "days": "天",
-      "minutes": "分钟",
-      "placeholderMinutes": "请输入时间间隔（分钟）",
-      "placeholderDays": "请输入时间间隔（天）",
-      "required": "请输入有效的时间间隔（分钟）"
+      "placeholder": "请输入时间间隔",
+      "required": "请输入有效的时间",
+      "monthLabel": "月",
+      "weekLabel": "周",
+      "timeLabel": "时间"
     }
   },
   "actions": {

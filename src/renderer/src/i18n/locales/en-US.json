@@ -513,7 +513,9 @@
     "tagsPlaceholder": "Enter tag name",
     "scorePlaceholder": "Enter score",
     "tagNamePlaceholder": "Enter tag name",
-    "reasonPlaceholder": "Enter reason"
+    "reasonPlaceholder": "Enter reason",
+    "relationAnd": "AND",
+    "relationOr": "OR"
   },
   "triggers": {
     "studentTag": {

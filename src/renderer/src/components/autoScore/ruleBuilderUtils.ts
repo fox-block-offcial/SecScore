@@ -1,9 +1,7 @@
-import type { RuleGroupType, Field, Operator } from 'react-querybuilder'
+import type { RuleGroupType, Field, RuleType } from 'react-querybuilder'
 import  {defaultOperators} from 'react-querybuilder'
 import { fetchAllTags } from '../TagEditorDialog'
 
-import type {  FullField, RuleType } from 'react-querybuilder';
-import {  toFullOption } from 'react-querybuilder';
 const tags = await fetchAllTags()
 
 export interface AutoScoreTrigger {
@@ -18,67 +16,34 @@ export interface AutoScoreAction {
   reason?: string
 }
 
-const musicalInstruments = fetchAllTags().then((tags) => tags.map((tag) => tag.name))
-
 export interface AutoScoreRuleData {
   triggers: AutoScoreTrigger[]
   actions: AutoScoreAction[]
 }
 
-// Function to get fields with i18n support
+export const validator = (r: RuleType) => !!r.value;
+
 export const getFields = (t: (key: string) => string): Field[] => [
   {
-    name: 'interval_time_passed',
-    label: t('autoScore.triggerIntervalTime'),
-    placeholder: t('autoScore.intervalMinutesPlaceholder'),
-    inputType: 'date',
-    datatype: 'timestamp with time zone',
-  },
-  {
     name: 'student_has_tag',
-    label: t('autoScore.triggerStudentTag'),
-    placeholder: t('autoScore.tagNamesPlaceholder'),
+    label: t('triggers.studentTag.label'),
+    placeholder: t('triggers.studentTag.placeholder'),
     valueEditorType: 'multiselect',
     values: tags.map((tag) => tag.name),
     defaultValue: tags.length > 0 ? [tags[0].name] : [],
-    operators: defaultOperators.filter((op) => op.name === '='),
+    operators: defaultOperators.filter((op) => op.name === 'in'),
   },
   {
-    name: 'tourStops',
-    label: 'Tour stops',
-    
-    matchModes: true,
+    name: 'interval_time_passed',
+    label: t('triggers.intervalTime.label'),
+    matchModes: ['all'],
     subproperties: [
-      { name: 'date', label: 'Date', inputType: 'date', datatype: 'date' },
-      { name: 'time', label: 'Time', inputType: 'time', datatype: 'time' },
+      { name: 'month', label: t('triggers.intervalTime.monthLabel'), inputType: 'number', datatype: 'month', operators: ['='] },
+/*       { name: 'week', label: t('triggers.intervalTime.weekLabel'), inputType: 'week', datatype: 'week', operators: ['='] },
+ */      { name: 'time', label: t('triggers.intervalTime.timeLabel'), inputType: 'time', datatype: 'time', operators: ['='] },
     ],
   },
 ]
-
-/* export const operators: Operator[] = [
-  { name: '=', label: '=' },
-  { name: 'contains', label: 'contains' },
-  { name: 'between', label: 'between' }
-] */
-
-export const fields: FullField[] = (
-  [
-    {
-      name: 'interval_time_passed',
-      label: ('autoScore.triggerIntervalTime'),
-      placeholder: ('autoScore.intervalMinutesPlaceholder')
-    },
-    {
-      name: 'student_has_tag',
-      label: ('autoScore.triggerStudentTag'),
-      placeholder: ('autoScore.tagNamesPlaceholder'),
-      valueEditorType: 'multiselect',
-      values: tags.map((tag) => tag.name),
-      defaultValue: 'more_cowbell',
-      operators: defaultOperators.filter((op) => op.name === 'in'),
-    }
-  ] satisfies Field[]
-).map((o) => toFullOption(o)); 
 
 export const defaultQuery: RuleGroupType = {
   combinator: 'and',
@@ -88,7 +53,7 @@ export const defaultQuery: RuleGroupType = {
 export function queryToAutoScoreRule(query: RuleGroupType): AutoScoreRuleData {
   const triggers: AutoScoreTrigger[] = []
 
-  const processRuleGroup = (group: RuleGroupType, relation: 'AND' | 'OR' = 'AND') => {
+/*   const processRuleGroup = (group: RuleGroupType, relation: 'AND' | 'OR' = 'AND') => {
     group.rules.forEach((rule, index) => {
       if ('rules' in rule) {
         processRuleGroup(rule, group.combinator === 'and' ? 'AND' : 'OR')
@@ -105,9 +70,9 @@ export function queryToAutoScoreRule(query: RuleGroupType): AutoScoreRuleData {
         triggers.push(trigger)
       }
     })
-  }
+  } */
 
-  processRuleGroup(query)
+  /* processRuleGroup(query) */
 
   return {
     triggers,
@@ -138,27 +103,3 @@ export function autoScoreRuleToQuery(ruleData: AutoScoreRuleData): RuleGroupType
     rules: rules.length > 0 ? rules : defaultQuery.rules
   }
 }
-
-/* import type { Field, FullField, RuleType } from 'react-querybuilder';
-import { defaultOperators, toFullOption } from 'react-querybuilder';
-import { fetchAllTags } from '../TagEditorDialog'
-const tags = await fetchAllTags()
-
-export const fields: FullField[] = (
-  [
-    {
-      name: 'interval_time_passed',
-      label: ('autoScore.triggerIntervalTime'),
-      placeholder: ('autoScore.intervalMinutesPlaceholder')
-    },
-    {
-      name: 'student_has_tag',
-      label: ('autoScore.triggerStudentTag'),
-      placeholder: ('autoScore.tagNamesPlaceholder'),
-      valueEditorType: 'multiselect',
-      values: tags.map((tag) => tag.name),
-      defaultValue: 'more_cowbell',
-      operators: defaultOperators.filter((op) => op.name === 'in'),
-    }
-  ] satisfies Field[]
-).map((o) => toFullOption(o)); */
