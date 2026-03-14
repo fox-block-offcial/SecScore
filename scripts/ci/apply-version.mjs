@@ -9,12 +9,6 @@ if (!version) {
   process.exit(1)
 }
 
-const semverRe = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/
-if (!semverRe.test(version)) {
-  process.stderr.write(`非法版本号：${version}\n`)
-  process.exit(1)
-}
-
 const pkgPath = path.join(process.cwd(), 'package.json')
 const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf-8'))
 pkg.version = version

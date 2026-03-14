@@ -16,7 +16,7 @@ const message = String(rawMessage || '').trim()
 // 是否以 release: 开头
 const isReleasePrefix = /^release:/i.test(message)
 
-const semverRe = /\bv?(\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?)\b/
+const semverRe = /\bv?(\S+)/
 const versionMatch = message.match(semverRe)
 const version = versionMatch ? versionMatch[1] : ''
 
