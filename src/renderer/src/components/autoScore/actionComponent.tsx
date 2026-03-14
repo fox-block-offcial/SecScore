@@ -1,8 +1,20 @@
 import { Space, Input, InputNumber, Select, Button } from 'antd'
 import { PlusOutlined, DeleteOutlined } from '@ant-design/icons'
 import { useTranslation } from 'react-i18next'
-import type { ActionItem } from './types'
-import { ACTION_DEFINITIONS, SCORE_RANGE } from './constants'
+
+const SCORE_RANGE = { MIN: -999, MAX: 999 }
+
+const ACTION_DEFINITIONS = [
+  { eventName: 'add_score', labelKey: 'autoScore.actionAddScore' },
+  { eventName: 'add_tag', labelKey: 'autoScore.actionAddTag' }
+]
+
+interface ActionItem {
+  id: number
+  eventName: string
+  value?: string
+  reason?: string
+}
 
 interface ActionComponentProps {
   actions: ActionItem[]

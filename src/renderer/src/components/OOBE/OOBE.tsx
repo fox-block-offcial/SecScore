@@ -1,6 +1,6 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Button, Segmented, Input, Tag, message, Typography, InputNumber } from 'antd'
+import { Button, Segmented, Input, Tag, message, Typography, InputNumber, Space } from 'antd'
 import { PlusOutlined, UploadOutlined, FileExcelOutlined } from '@ant-design/icons'
 import { OOBEBackground } from './OOBEBackground'
 import { useTheme } from '../../contexts/ThemeContext'
@@ -13,7 +13,7 @@ interface oobeProps {
   onComplete: () => void
 }
 
-type oobeStep = 'language' | 'theme' | 'students' | 'reasons' | 'start'
+type oobeStep = 'language' | 'theme' | 'password' | 'students' | 'reasons' | 'start'
 
 interface studentItem {
   name: string
@@ -86,10 +86,12 @@ export const OOBE: React.FC<oobeProps> = ({ visible, onComplete }) => {
   const [reasons, setReasons] = useState<reasonItem[]>([])
   const [newReasonContent, setNewReasonContent] = useState('')
   const [newReasonDelta, setNewReasonDelta] = useState(1)
+  const [adminPassword, setAdminPassword] = useState('')
+  const [pointsPassword, setPointsPassword] = useState('')
 
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  const steps: oobeStep[] = ['language', 'theme', 'students', 'reasons', 'start']
+  const steps: oobeStep[] = ['language', 'theme', 'password', 'students', 'reasons', 'start']
   const stepIndex = steps.indexOf(currentStep) + 1
   const totalSteps = steps.length
 
@@ -315,6 +317,13 @@ export const OOBE: React.FC<oobeProps> = ({ visible, onComplete }) => {
         })
       }
 
+      if (adminPassword || pointsPassword) {
+        await (window as any).api.authSetPasswords({
+          adminPassword: adminPassword || null,
+          pointsPassword: pointsPassword || null
+        })
+      }
+
       const res = await (window as any).api.setSetting('is_wizard_completed', true)
       if (!res?.success) throw new Error(res?.message || 'failed')
 
@@ -433,6 +442,52 @@ export const OOBE: React.FC<oobeProps> = ({ visible, onComplete }) => {
                 })}
               </div>
             </div>
+          </div>
+        )
+
+      case 'password':
+        return (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+            <Typography.Text type="secondary">
+              {t('oobe.steps.password.description')}
+            </Typography.Text>
+            <Space direction="vertical" style={{ width: '100%' }}>
+              <div>
+                <Typography.Text strong>{t('oobe.steps.password.adminPassword')}</Typography.Text>
+                <Typography.Text
+                  type="secondary"
+                  style={{ display: 'block', fontSize: 12, marginTop: 4 }}
+                >
+                  {t('oobe.steps.password.adminPasswordHint')}
+                </Typography.Text>
+                <Input.Password
+                  value={adminPassword}
+                  onChange={(e) => setAdminPassword(e.target.value)}
+                  placeholder={t('oobe.steps.password.passwordPlaceholder')}
+                  maxLength={6}
+                  style={{ marginTop: 8 }}
+                />
+              </div>
+              <div>
+                <Typography.Text strong>{t('oobe.steps.password.pointsPassword')}</Typography.Text>
+                <Typography.Text
+                  type="secondary"
+                  style={{ display: 'block', fontSize: 12, marginTop: 4 }}
+                >
+                  {t('oobe.steps.password.pointsPasswordHint')}
+                </Typography.Text>
+                <Input.Password
+                  value={pointsPassword}
+                  onChange={(e) => setPointsPassword(e.target.value)}
+                  placeholder={t('oobe.steps.password.passwordPlaceholder')}
+                  maxLength={6}
+                  style={{ marginTop: 8 }}
+                />
+              </div>
+              <Typography.Text type="secondary" style={{ fontSize: 12 }}>
+                {t('oobe.steps.password.hint')}
+              </Typography.Text>
+            </Space>
           </div>
         )
 

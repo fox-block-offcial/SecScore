@@ -1,5 +1,5 @@
 import type { RuleGroupType, Field, RuleType } from 'react-querybuilder'
-import  {defaultOperators} from 'react-querybuilder'
+import { defaultOperators } from 'react-querybuilder'
 import { fetchAllTags } from '../TagEditorDialog'
 
 const tags = await fetchAllTags()
@@ -21,7 +21,7 @@ export interface AutoScoreRuleData {
   actions: AutoScoreAction[]
 }
 
-export const validator = (r: RuleType) => !!r.value;
+export const validator = (r: RuleType) => !!r.value
 
 export const getFields = (t: (key: string) => string): Field[] => [
   {
@@ -31,18 +31,30 @@ export const getFields = (t: (key: string) => string): Field[] => [
     valueEditorType: 'multiselect',
     values: tags.map((tag) => tag.name),
     defaultValue: tags.length > 0 ? [tags[0].name] : [],
-    operators: defaultOperators.filter((op) => op.name === 'in'),
+    operators: defaultOperators.filter((op) => op.name === 'in')
   },
   {
     name: 'interval_time_passed',
     label: t('triggers.intervalTime.label'),
     matchModes: ['all'],
     subproperties: [
-      { name: 'month', label: t('triggers.intervalTime.monthLabel'), inputType: 'number', datatype: 'month', operators: ['='] },
-/*       { name: 'week', label: t('triggers.intervalTime.weekLabel'), inputType: 'week', datatype: 'week', operators: ['='] },
- */      { name: 'time', label: t('triggers.intervalTime.timeLabel'), inputType: 'time', datatype: 'time', operators: ['='] },
-    ],
-  },
+      {
+        name: 'month',
+        label: t('triggers.intervalTime.monthLabel'),
+        inputType: 'number',
+        datatype: 'month',
+        operators: ['=']
+      },
+      /*       { name: 'week', label: t('triggers.intervalTime.weekLabel'), inputType: 'week', datatype: 'week', operators: ['='] },
+       */ {
+        name: 'time',
+        label: t('triggers.intervalTime.timeLabel'),
+        inputType: 'time',
+        datatype: 'time',
+        operators: ['=']
+      }
+    ]
+  }
 ]
 
 export const defaultQuery: RuleGroupType = {
@@ -50,10 +62,10 @@ export const defaultQuery: RuleGroupType = {
   rules: [{ field: 'interval_time_passed', operator: '=', value: '1440' }]
 }
 
-export function queryToAutoScoreRule(query: RuleGroupType): AutoScoreRuleData {
+export function queryToAutoScoreRule(_query: RuleGroupType): AutoScoreRuleData {
   const triggers: AutoScoreTrigger[] = []
 
-/*   const processRuleGroup = (group: RuleGroupType, relation: 'AND' | 'OR' = 'AND') => {
+  /*   const processRuleGroup = (group: RuleGroupType, relation: 'AND' | 'OR' = 'AND') => {
     group.rules.forEach((rule, index) => {
       if ('rules' in rule) {
         processRuleGroup(rule, group.combinator === 'and' ? 'AND' : 'OR')

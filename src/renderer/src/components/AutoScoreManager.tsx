@@ -1,12 +1,11 @@
 import { useState, useEffect } from 'react'
-import { HolderOutlined, DeleteOutlined } from '@ant-design/icons'
+import { HolderOutlined } from '@ant-design/icons'
 import { useTranslation } from 'react-i18next'
 import RuleComponent from './autoScore/ruleComponent'
 import {
   Card,
   Form,
   Input,
-  InputNumber,
   Button,
   message,
   Table,
@@ -297,50 +296,6 @@ export const AutoScoreManager: React.FC = () => {
     setActionList([])
   }
 
-  const handleAddTrigger = () => {
-    const nextId = triggerList.length ? Math.max(...triggerList.map((t) => t.id)) + 1 : 1
-    const defaultTrigger = TRIGGER_DEFINITIONS[0]
-    if (!defaultTrigger) {
-      messageApi.error(t('autoScore.noTriggerAvailable'))
-      return
-    }
-    setTriggerList((prev) => [
-      ...prev,
-      {
-        id: nextId,
-        eventName: defaultTrigger.eventName,
-        value: '',
-        relation: 'AND'
-      }
-    ])
-  }
-
-  const handleAddAction = () => {
-    const nextId = actionList.length ? Math.max(...actionList.map((a) => a.id)) + 1 : 1
-    const defaultAction = ACTION_DEFINITIONS[0]
-    if (!defaultAction) {
-      messageApi.error(t('autoScore.noActionAvailable'))
-      return
-    }
-    setActionList((prev) => [
-      ...prev,
-      {
-        id: nextId,
-        eventName: defaultAction.eventName,
-        value: '',
-        reason: ''
-      }
-    ])
-  }
-
-  const handleRemoveAction = (id: number) => {
-    setActionList((prev) => prev.filter((a) => a.id !== id))
-  }
-
-  const handleActionChange = (id: number, field: keyof ActionItem, value: string | number) => {
-    setActionList((prev) => prev.map((a) => (a.id === id ? { ...a, [field]: value } : a)))
-  }
-
   const columns: ColumnsType<AutoScoreRule> = [
     {
       key: 'drag',
@@ -443,61 +398,6 @@ export const AutoScoreManager: React.FC = () => {
     }
   ]
 
-  const renderActionItem = (action: ActionItem) => (
-    <div
-      key={action.id}
-      style={{
-        padding: '12px',
-        border: '1px solid #d9d9d9',
-        borderRadius: '6px',
-        backgroundColor: 'var(--ss-card-bg)',
-        marginBottom: '8px'
-      }}
-    >
-      <Space wrap>
-        <Select
-          value={action.eventName}
-          onChange={(value) => handleActionChange(action.id, 'eventName', value)}
-          style={{ width: 150 }}
-          options={ACTION_DEFINITIONS.map((d) => ({
-            label: t(d.labelKey),
-            value: d.eventName
-          }))}
-        />
-        {action.eventName === 'add_score' && (
-          <InputNumber
-            value={action.value ? parseInt(action.value) : undefined}
-            onChange={(value) => handleActionChange(action.id, 'value', String(value || 0))}
-            placeholder={t('autoScore.scorePlaceholder')}
-            min={-100}
-            max={100}
-            style={{ width: 120 }}
-          />
-        )}
-        {action.eventName === 'add_tag' && (
-          <Input
-            value={action.value}
-            onChange={(e) => handleActionChange(action.id, 'value', e.target.value)}
-            placeholder={t('autoScore.tagNamePlaceholder')}
-            style={{ width: 200 }}
-          />
-        )}
-        <Input
-          value={action.reason}
-          onChange={(e) => handleActionChange(action.id, 'reason', e.target.value)}
-          placeholder={t('autoScore.reasonPlaceholder')}
-          style={{ width: 200 }}
-        />
-        <Button
-          type="text"
-          danger
-          icon={<DeleteOutlined />}
-          onClick={() => handleRemoveAction(action.id)}
-        />
-      </Space>
-    </div>
-  )
-
   return (
     <div style={{ padding: '24px' }}>
       {contextHolder}
@@ -527,8 +427,8 @@ export const AutoScoreManager: React.FC = () => {
       </Card>
 
       <RuleComponent />
-      
-{/*       <Card
+
+      {/*       <Card
         style={{ marginBottom: '24px', backgroundColor: 'var(--ss-card-bg)' }}
         title={t('autoScore.whenTriggered')}
       >
@@ -547,7 +447,7 @@ export const AutoScoreManager: React.FC = () => {
         </Space>
       </Card>  */}
 
-{/*       <Card
+      {/*       <Card
         style={{ marginBottom: '24px', backgroundColor: 'var(--ss-card-bg)' }}
         title={t('autoScore.triggeredActions')}
       >
